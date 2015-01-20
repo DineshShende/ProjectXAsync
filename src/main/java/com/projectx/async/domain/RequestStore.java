@@ -16,15 +16,17 @@ public class RequestStore  implements Serializable {
 
 	private static final long serialVersionUID = -1779666204730031281L;
 	
-	private ConcurrentMap<String , EventDeferredObject<Boolean>> requestMap=new  ConcurrentHashMap<String , EventDeferredObject<Boolean>>();
+	private ConcurrentMap<String , EventDeferredObject<Boolean>> requestMap;
 	
 	
 	
 	public RequestStore() {
-		
+		System.out.println("In constructor of requestStore");
+		this.requestMap = new  ConcurrentHashMap<String , EventDeferredObject<Boolean>>();
 	}
 
 	public RequestStore(ConcurrentMap<String , EventDeferredObject<Boolean>> requestMap) {
+		System.out.println("In constructor of requestStore");
 		this.requestMap = requestMap;
 	}
 
@@ -32,6 +34,12 @@ public class RequestStore  implements Serializable {
 	public EventDeferredObject<Boolean> add(EventDeferredObject<Boolean> request) {
 		requestMap.put(request.getEmail(), request);
 		return request;
+	}
+	
+	public EventDeferredObject<Boolean> get(String email) {
+		EventDeferredObject<Boolean> fetched=requestMap.get(email);
+		
+		return fetched;
 	}
 
 	

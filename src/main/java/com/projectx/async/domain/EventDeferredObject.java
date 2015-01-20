@@ -1,13 +1,19 @@
 package com.projectx.async.domain;
 
+import java.util.Date;
+
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 
-public class EventDeferredObject<T> extends DeferredResult<Boolean> implements Runnable {
+public class EventDeferredObject<T> extends DeferredResult<Integer> implements Runnable {
 
 	private Long customerId;
 	
 	private String email;
+	
+	private Date timeStamp;
+	
+	
 	
 	@Override
 	public void run() {
@@ -16,31 +22,29 @@ public class EventDeferredObject<T> extends DeferredResult<Boolean> implements R
 		
 		EmailMessageDTO emailMessageDTO=new EmailMessageDTO("dineshshe@gmail.com", "Hi There");
 		
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		Boolean result=restTemplate.postForObject("http://localhost:9080/asycn/sendEmail", emailMessageDTO, Boolean.class);
-
-		this.setResult(result);
+		System.out.println("Setting result:"+this);
+		if(result==true)
+			this.setResult(2);
+		else
+			this.setResult(1);
 	}
 	
 	
 	public EventDeferredObject() {
-
+		
 	}
 
-	public EventDeferredObject(Long customerId, String email) {
+	public EventDeferredObject(Long customerId, String email,Date date) {
+		//super(10000L,new Integer(0));
+		super(500000L, new Integer(0));
 		this.customerId = customerId;
 		this.email = email;
+		this.timeStamp=date;
+		
 	}
 
 	
-
-
 	public Long getCustomerId() {
 		return customerId;
 	}
