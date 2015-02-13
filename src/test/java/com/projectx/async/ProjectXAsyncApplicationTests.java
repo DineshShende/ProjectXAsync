@@ -5,10 +5,10 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.projectx.async.config.ProjectXAsyncApplication;
+import com.projectx.async.config.Application;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ProjectXAsyncApplication.class)
+@SpringApplicationConfiguration(classes = Application.class)
 public class ProjectXAsyncApplicationTests {
 
 	@Test

@@ -2,8 +2,6 @@ package com.projectx.async.domain;
 
 public class EmailDTO {
 
-	private Long customerId;
-	
 	private String email;
 	
 	private String message;
@@ -12,19 +10,11 @@ public class EmailDTO {
 
 	}
 
-	public EmailDTO(Long customerId, String email, String message) {
+	public EmailDTO(String email, String message) {
 
-		this.customerId = customerId;
+	
 		this.email = email;
 		this.message = message;
-	}
-
-	public Long getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
 	}
 
 	public String getEmail() {
@@ -45,16 +35,13 @@ public class EmailDTO {
 
 	@Override
 	public String toString() {
-		return "EmailDTO [customerId=" + customerId + ", email=" + email
-				+ ", message=" + message + "]";
+		return "EmailDTO [email=" + email + ", message=" + message + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((customerId == null) ? 0 : customerId.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((message == null) ? 0 : message.hashCode());
 		return result;
@@ -69,11 +56,6 @@ public class EmailDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		EmailDTO other = (EmailDTO) obj;
-		if (customerId == null) {
-			if (other.customerId != null)
-				return false;
-		} else if (!customerId.equals(other.customerId))
-			return false;
 		if (email == null) {
 			if (other.email != null)
 				return false;
@@ -86,8 +68,5 @@ public class EmailDTO {
 			return false;
 		return true;
 	}
-	
-	
-	
 	
 }

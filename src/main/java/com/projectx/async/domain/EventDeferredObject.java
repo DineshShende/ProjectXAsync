@@ -7,11 +7,11 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 public class EventDeferredObject<T> extends DeferredResult<Integer> implements Runnable {
 
-	private Long customerId;
-	
 	private String email;
 	
-	private Date timeStamp;
+	private String message;
+	
+	
 	
 	
 	
@@ -20,10 +20,12 @@ public class EventDeferredObject<T> extends DeferredResult<Integer> implements R
 		
 		RestTemplate restTemplate=new RestTemplate();
 		
-		EmailMessageDTO emailMessageDTO=new EmailMessageDTO("dineshshe@gmail.com", "Hi There");
+		EmailMessageDTO emailMessageDTO=new EmailMessageDTO(email, message);
+		
+//		
 		
 		Boolean result=restTemplate.postForObject("http://localhost:9080/asycn/sendEmail", emailMessageDTO, Boolean.class);
-		System.out.println("Setting result:"+this);
+		
 		if(result==true)
 			this.setResult(2);
 		else
@@ -35,24 +37,17 @@ public class EventDeferredObject<T> extends DeferredResult<Integer> implements R
 		
 	}
 
-	public EventDeferredObject(Long customerId, String email,Date date) {
+	public EventDeferredObject(String email,String message) {
 		//super(10000L,new Integer(0));
-		super(500000L, new Integer(0));
-		this.customerId = customerId;
+		super(50000L, new Integer(0));
+	
 		this.email = email;
-		this.timeStamp=date;
+		this.message=message;
+		
 		
 	}
 
 	
-	public Long getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -61,25 +56,32 @@ public class EventDeferredObject<T> extends DeferredResult<Integer> implements R
 		this.email = email;
 	}
 
-	
-	
-	@Override
-	public String toString() {
-		return "EventDeferredObject [customerId=" + customerId + ", email="
-				+ email + "]";
+	public String getMessage() {
+		return message;
 	}
 
-	
-	
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+
+	@Override
+	public String toString() {
+		return "EventDeferredObject [email=" + email + ", message=" + message
+				+ "]";
+	}
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((customerId == null) ? 0 : customerId.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((message == null) ? 0 : message.hashCode());
 		return result;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -90,18 +92,19 @@ public class EventDeferredObject<T> extends DeferredResult<Integer> implements R
 		if (getClass() != obj.getClass())
 			return false;
 		EventDeferredObject other = (EventDeferredObject) obj;
-		if (customerId == null) {
-			if (other.customerId != null)
-				return false;
-		} else if (!customerId.equals(other.customerId))
-			return false;
 		if (email == null) {
 			if (other.email != null)
 				return false;
 		} else if (!email.equals(other.email))
 			return false;
+		if (message == null) {
+			if (other.message != null)
+				return false;
+		} else if (!message.equals(other.message))
+			return false;
 		return true;
 	}
+
 
 
 

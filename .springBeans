@@ -7,7 +7,7 @@
 	</configSuffixes>
 	<enableImports><![CDATA[false]]></enableImports>
 	<configs>
-		<config>java:com.projectx.async.config.ProjectXAsyncApplication</config>
+		<config>java:com.projectx.async.config.Application</config>
 	</configs>
 	<autoconfigs>
 	</autoconfigs>
