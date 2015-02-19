@@ -1,35 +1,49 @@
 package com.projectx.async.domain;
 
 import java.util.Date;
+import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 
-public class EventDeferredObject<T> extends DeferredResult<Integer> implements Runnable {
+import com.projectx.async.controller.SendVerificationDetailsController;
+
+public class EventDeferredObject<T> extends DeferredResult<ResponseEntity<Integer>> implements Runnable {
 
 	private String email;
+
+	private UUID uuid;
 	
 	private String message;
 	
-	
-	
-	
+
 	
 	@Override
 	public void run() {
 		
 		RestTemplate restTemplate=new RestTemplate();
 		
-		EmailMessageDTO emailMessageDTO=new EmailMessageDTO(email, message);
+		EmailMessageDTO emailMessageDTO=new EmailMessageDTO(email,uuid, message);
 		
-//		
+		Log logger = LogFactory.getLog(SendVerificationDetailsController.class);
 		
 		Boolean result=restTemplate.postForObject("http://localhost:9080/asycn/sendEmail", emailMessageDTO, Boolean.class);
 		
 		if(result==true)
-			this.setResult(2);
+		{
+			logger.debug("Send Status:True"+emailMessageDTO);
+			this.setResult(new ResponseEntity<Integer>(2,HttpStatus.OK));
+			
+		}
 		else
-			this.setResult(1);
+		{
+			logger.debug("Send Status:False"+emailMessageDTO);
+			this.setResult(new ResponseEntity<Integer>(1,HttpStatus.OK));
+		}
 	}
 	
 	
@@ -37,13 +51,13 @@ public class EventDeferredObject<T> extends DeferredResult<Integer> implements R
 		
 	}
 
-	public EventDeferredObject(String email,String message) {
+	public EventDeferredObject(String email,UUID uuid,String message) {
 		//super(10000L,new Integer(0));
-		super(50000L, new Integer(0));
+		super(50000L, (new ResponseEntity<Integer>(1,HttpStatus.OK)));
 	
 		this.email = email;
 		this.message=message;
-		
+		this.uuid=uuid;
 		
 	}
 
@@ -66,10 +80,22 @@ public class EventDeferredObject<T> extends DeferredResult<Integer> implements R
 	}
 
 
+
+
+	public UUID getUuid() {
+		return uuid;
+	}
+
+
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+	}
+
+
 	@Override
 	public String toString() {
-		return "EventDeferredObject [email=" + email + ", message=" + message
-				+ "]";
+		return "EventDeferredObject [email=" + email + ", uuid=" + uuid
+				+ ", message=" + message + "]";
 	}
 
 
@@ -104,8 +130,5 @@ public class EventDeferredObject<T> extends DeferredResult<Integer> implements R
 			return false;
 		return true;
 	}
-
-
-
 
 }

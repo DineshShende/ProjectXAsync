@@ -5,17 +5,19 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
+import com.projectx.async.util.aspect.LoggingAspect;
 
 @Configuration
-@ComponentScan(basePackages="com.projectx.async")
+@ComponentScan(basePackages="com.projectx")
 @EnableAutoConfiguration
 @EnableScheduling
-
+@EnableAspectJAutoProxy
 public class Application {
 
     public static void main(String[] args) {
@@ -38,4 +40,9 @@ public class Application {
     	return gson;
     }
     
+    @Bean
+    public LoggingAspect loginAspect()
+    {
+    	return new LoggingAspect();
+    }
 }

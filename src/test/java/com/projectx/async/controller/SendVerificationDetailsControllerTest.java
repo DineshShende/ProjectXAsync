@@ -46,9 +46,9 @@ public class SendVerificationDetailsControllerTest {
 	{
 
 		this.mockMvc.perform(
-								get("/sendVerificationDetails/sendEmail/d"))
-															
-			.andDo(print());
+								get("/sendVerificationDetails/get"))
+				;											
+			//.andDo(print());
 	}
 	
 	

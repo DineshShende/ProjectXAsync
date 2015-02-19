@@ -16,6 +16,8 @@ buildscript {
         maven { url "http://repo.spring.io/libs-release" }
         mavenLocal()
         mavenCentral()
+        jcenter()
+    	maven { url "http://repo.spring.io/libs-snapshot" }
     }
 
     dependencies {
@@ -24,7 +26,7 @@ buildscript {
 }
 
 
-jar {
+war {
     baseName = 'Asyn'
     version = '0.0.1-SNAPSHOT'
 }
@@ -50,6 +52,8 @@ dependencies {
     compile('com.google.code.gson:gson:2.3')
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("junit:junit")
+    
+    compile ('org.springframework.boot:spring-boot-starter-aop')
     
     
 }

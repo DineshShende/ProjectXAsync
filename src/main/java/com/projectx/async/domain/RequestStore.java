@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 
@@ -16,28 +17,28 @@ public class RequestStore  implements Serializable {
 
 	private static final long serialVersionUID = -1779666204730031281L;
 	
-	private ConcurrentMap<String , EventDeferredObject<Integer>> requestMap;
+	private ConcurrentMap<String , EventDeferredObject<ResponseEntity<Integer>>> requestMap;
 	
 	
 	
 	public RequestStore() {
 		System.out.println("In constructor of requestStore");
-		this.requestMap = new  ConcurrentHashMap<String , EventDeferredObject<Integer>>();
+		this.requestMap = new  ConcurrentHashMap<String , EventDeferredObject<ResponseEntity<Integer>>>();
 	}
 
-	public RequestStore(ConcurrentMap<String , EventDeferredObject<Integer>> requestMap) {
+	public RequestStore(ConcurrentMap<String , EventDeferredObject<ResponseEntity<Integer>>> requestMap) {
 		System.out.println("In constructor of requestStore");
 		this.requestMap = requestMap;
 	}
 
 	
-	public EventDeferredObject<Integer> add(EventDeferredObject<Integer> request) {
+	public EventDeferredObject<ResponseEntity<Integer>> add(EventDeferredObject<ResponseEntity<Integer>> request) {
 		requestMap.put(request.getEmail(), request);
 		return request;
 	}
 	
-	public EventDeferredObject<Integer> get(String email) {
-		EventDeferredObject<Integer> fetched=requestMap.get(email);
+	public EventDeferredObject<ResponseEntity<Integer>> get(String email) {
+		EventDeferredObject<ResponseEntity<Integer>> fetched=requestMap.get(email);
 		
 		return fetched;
 	}
@@ -60,7 +61,7 @@ public class RequestStore  implements Serializable {
 	}
 	
 	public void clear() {
-		requestMap=new  ConcurrentHashMap<String , EventDeferredObject<Integer>>();
+		requestMap=new  ConcurrentHashMap<String , EventDeferredObject<ResponseEntity<Integer>>>();
 	}
 	
 	
