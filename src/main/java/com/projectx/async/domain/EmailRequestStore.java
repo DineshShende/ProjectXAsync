@@ -13,32 +13,32 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope(value="singleton", proxyMode=ScopedProxyMode.TARGET_CLASS)
-public class RequestStore  implements Serializable {
+public class EmailRequestStore  implements Serializable {
 
 	private static final long serialVersionUID = -1779666204730031281L;
 	
-	private ConcurrentMap<String , EventDeferredObject<ResponseEntity<Integer>>> requestMap;
+	private ConcurrentMap<String , EmailEventDeferredObject<ResponseEntity<Integer>>> requestMap;
 	
 	
 	
-	public RequestStore() {
+	public EmailRequestStore() {
 		System.out.println("In constructor of requestStore");
-		this.requestMap = new  ConcurrentHashMap<String , EventDeferredObject<ResponseEntity<Integer>>>();
+		this.requestMap = new  ConcurrentHashMap<String , EmailEventDeferredObject<ResponseEntity<Integer>>>();
 	}
 
-	public RequestStore(ConcurrentMap<String , EventDeferredObject<ResponseEntity<Integer>>> requestMap) {
+	public EmailRequestStore(ConcurrentMap<String , EmailEventDeferredObject<ResponseEntity<Integer>>> requestMap) {
 		System.out.println("In constructor of requestStore");
 		this.requestMap = requestMap;
 	}
 
 	
-	public EventDeferredObject<ResponseEntity<Integer>> add(EventDeferredObject<ResponseEntity<Integer>> request) {
+	public EmailEventDeferredObject<ResponseEntity<Integer>> add(EmailEventDeferredObject<ResponseEntity<Integer>> request) {
 		requestMap.put(request.getEmail(), request);
 		return request;
 	}
 	
-	public EventDeferredObject<ResponseEntity<Integer>> get(String email) {
-		EventDeferredObject<ResponseEntity<Integer>> fetched=requestMap.get(email);
+	public EmailEventDeferredObject<ResponseEntity<Integer>> get(String email) {
+		EmailEventDeferredObject<ResponseEntity<Integer>> fetched=requestMap.get(email);
 		
 		return fetched;
 	}
@@ -61,7 +61,7 @@ public class RequestStore  implements Serializable {
 	}
 	
 	public void clear() {
-		requestMap=new  ConcurrentHashMap<String , EventDeferredObject<ResponseEntity<Integer>>>();
+		requestMap=new  ConcurrentHashMap<String , EmailEventDeferredObject<ResponseEntity<Integer>>>();
 	}
 	
 	

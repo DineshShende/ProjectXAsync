@@ -37,7 +37,7 @@ public class RetryService {
 	RetriggerDetailsRepository retriggerDetailsRepository;
 	
 	@Autowired
-	RestTemplate restTemplate; 
+	AsyncRestTemplate asyncRestTemplate; 
 	
 	@Autowired
 	Environment env;
@@ -48,29 +48,23 @@ public class RetryService {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Scheduled(fixedRate=30000)
-	public void retryLogin()
+	public void retryService()
 	{
 		
 		List<RetriggerDetails> list=retriggerDetailsRepository.findAll();
 		
-		
-		
-		AsyncRestTemplate asyncRestTemplate=new AsyncRestTemplate();
-		
-		
+			
 		for(int i=0;i<list.size();i++)
 		{
 		
 			CountObject countObject=new CountObject(i);
 			
-			HttpEntity<Object> entity=new HttpEntity<Object>(gson.fromJson(list.get(i).getData(), EmailMessageDTO.class));
+			HttpEntity<Object> entity=new HttpEntity<Object>(gson.fromJson(list.get(i).getData(), Object.class));
 			
-			try{
-				
 			log.debug("Started retry for"+list.get(i));
 				
 			ListenableFuture<ResponseEntity<Integer>>		
-			 status=asyncRestTemplate.exchange(env.getProperty("async.url")+"/sendVerificationDetails/sendEmailAsync", HttpMethod.POST,
+			 status=asyncRestTemplate.exchange(env.getProperty("async.url")+list.get(i).getService(), HttpMethod.POST,
 					 entity, Integer.class);
 			 
 				 
@@ -79,7 +73,7 @@ public class RetryService {
 				@Override
 				public void onSuccess(ResponseEntity<Integer> result) {
 					
-					if(result.getBody().equals(new Integer(2)))
+					if(result.getBody().equals(new Integer(2))||result.getBody().equals(new Integer(0)))
 					{
 						log.debug("Sucess retry for"+list.get(countObject.getCount()));
 						retriggerDetailsRepository.deleteById(list.get(countObject.getCount()).getRetriggerId());
@@ -90,35 +84,25 @@ public class RetryService {
 				@Override
 				public void onFailure(Throwable t) {
 
-					log.debug("Failure retry for"+list.get(countObject.getCount()));
 					
-					try {
-						throw t;
-					} catch (Throwable e) {
-						
-						//System.out.println(e.getStackTrace()+""+e.getLocalizedMessage()+""+e.toString()+""+e.);
-						
-						
-					}
 				}
 
 				
 			});
 		
 			log.debug("Ended retry for"+list.get(i));
-		}catch(Exception e)
-			{
-			
-			}
 			
 		
 		}
-	
-		/*
 		
+	
+		
+		/*
 		Predicate<RetriggerDetails> predicate=(e)->{
 			
 			BooleanStatus booleanStatus=new BooleanStatus(false); 
+			
+			log.debug("Started retry for"+e.getData());
 			
 			asyncRestTemplate.exchange(env.getProperty("async.url")+e.getService(), HttpMethod.POST,
 					 new HttpEntity<Object>(gson.fromJson(e.getData(), Object.class)), Integer.class)
@@ -130,23 +114,29 @@ public class RetryService {
 							
 							if(result.getBody().equals(new Integer(2)))
 							{
-								System.out.println("Sucess");
+								log.debug("Sucess retry for"+e.getData());
 								booleanStatus.setStatus(true);
 								//retriggerDetailsRepository.deleteById(list.get(i).getRetriggerId());
 								
 							}
-							booleanStatus.setStatus(false);
+							else
+							{
+								log.debug("Failure retry for"+e.getData());
+								booleanStatus.setStatus(false);
+							}
 							
 						}
 		
 						@Override
 						public void onFailure(Throwable t) {
+							log.debug("Exception retry for"+e.getData());
 							booleanStatus.setStatus(false);
 						}
 		
 
 			});
-			return booleanStatus.getStatus().equals(true);
+			log.debug("Return result from predicate:"+booleanStatus.getStatus());
+			return booleanStatus.getStatus();
 
 			
 		};
